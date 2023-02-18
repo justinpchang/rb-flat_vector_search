@@ -1,0 +1,29 @@
+{
+  "javascript.format.enable": false,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "ruby.useBundler": true,
+  "ruby.useLanguageServer": false,
+  "ruby.lint": {
+    "rubocop": {
+      "useBundler": true,
+      "lint": true
+    }
+  },
+  "ruby.format": "rubocop",
+  "openInGitHub.defaultBranch": "development",
+  "openInGitHub.defaultRemote": "origin",
+  "sorbet.enabled": true,
+  "sorbet.lspConfigs": [
+    {
+      "id": "stable",
+      "name": "Sorbet",
+      "description": "Stable Sorbet Ruby IDE features",
+      "cwd": "${workspaceFolder}",
+      "command": ["bundle", "exec", "srb", "typecheck", "--lsp", "--disable-watchman"]
+    }
+  ]
+}
