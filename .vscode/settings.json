@@ -14,16 +14,10 @@
     }
   },
   "ruby.format": "rubocop",
-  "openInGitHub.defaultBranch": "development",
-  "openInGitHub.defaultRemote": "origin",
-  "sorbet.enabled": true,
-  "sorbet.lspConfigs": [
-    {
-      "id": "stable",
-      "name": "Sorbet",
-      "description": "Stable Sorbet Ruby IDE features",
-      "cwd": "${workspaceFolder}",
-      "command": ["bundle", "exec", "srb", "typecheck", "--lsp", "--disable-watchman"]
-    }
-  ]
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "rebornix.ruby"
+  }
 }

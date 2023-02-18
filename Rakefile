@@ -9,4 +9,14 @@ require "rubocop/rake_task"
 
 RuboCop::RakeTask.new
 
-task default: %i[clobber spec rubocop]
+require "rake/extensiontask"
+
+desc "Build"
+task build: :compile
+
+Rake::ExtensionTask.new("flat_vector_search") do |ext|
+  ext.ext_dir = "ext/flat_vector_search"
+  ext.lib_dir = "lib/flat_vector_search"
+end
+
+task default: %i[clobber compile rubocop spec]

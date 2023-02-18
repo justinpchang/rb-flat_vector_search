@@ -1,5 +1,16 @@
+require:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
 AllCops:
-  TargetRubyVersion: 2.6
+  NewCops: enable
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  Exclude:
+    - "ext/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
 
 Style/StringLiterals:
   Enabled: true
