@@ -12,5 +12,7 @@ RSpec.describe FlatVectorSearch do
     expect(index.add_item(0, [0, 0.1])).to be true
 
     expect(index.get_items).to eq([[0, 0.1]])
+
+    expect(index.get_item(0)).to eq([0, 0.1])
   end
 end

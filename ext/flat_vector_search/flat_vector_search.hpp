@@ -83,8 +83,28 @@ VALUE index_get_items(VALUE self)
     return rb_items_ary;
 }
 
+VALUE index_get_item(VALUE self, VALUE _idx)
+{
+    Check_Type(_idx, T_FIXNUM);
+
+    const int32_t idx = (int32_t)NUM2INT(_idx);
+    const int n_dims = get_index(self)->n_dims;
+
+    const std::vector<double> vec = get_index(self)->vecs[idx];
+    VALUE rb_item_ary = rb_ary_new2(n_dims);
+
+    for (int i = 0; i < vec.size(); i += 1)
+    {
+        rb_ary_store(rb_item_ary, i, DBL2NUM(vec[i]));
+    }
+
+    return rb_item_ary;
+}
+
 VALUE index_add_item(VALUE self, VALUE _idx, VALUE _vec)
 {
+    Check_Type(_idx, T_FIXNUM);
+
     const int32_t idx = (int32_t)NUM2INT(_idx);
     const int n_dims = get_index(self)->n_dims;
 
@@ -116,6 +136,7 @@ VALUE define_class(VALUE rb_mFlatVectorSearch)
     rb_define_method(rb_cIndex, "initialize", RUBY_METHOD_FUNC(index_init), 1);
     rb_define_method(rb_cIndex, "get_n_dims", RUBY_METHOD_FUNC(index_get_n_dims), 0);
     rb_define_method(rb_cIndex, "get_items", RUBY_METHOD_FUNC(index_get_items), 0);
+    rb_define_method(rb_cIndex, "get_item", RUBY_METHOD_FUNC(index_get_item), 1);
     rb_define_method(rb_cIndex, "add_item", RUBY_METHOD_FUNC(index_add_item), 2);
     return rb_cIndex;
 }
