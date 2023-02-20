@@ -14,5 +14,10 @@ RSpec.describe FlatVectorSearch do
     expect(index.get_items).to eq({ "test" => [0.0, 0.1] })
 
     expect(index.get_item("test")).to eq([0.0, 0.1])
+
+    expect(index.remove_item("test")).to be(true)
+    expect(index.remove_item("test")).to be(false)
+
+    expect(index.get_items.keys.length).to eq(0)
   end
 end

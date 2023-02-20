@@ -128,6 +128,25 @@ VALUE index_add_item(VALUE self, VALUE _key, VALUE _vec)
     return Qtrue;
 }
 
+VALUE index_remove_item(VALUE self, VALUE _key)
+{
+    Check_Type(_key, T_STRING);
+
+    const std::string key = (char *)StringValueCStr(_key);
+    index_t *index = get_index(self);
+
+    std::map<std::string, std::vector<double>>::iterator iter = index->items.find(key);
+
+    if (iter == index->items.end())
+    {
+        return Qfalse;
+    }
+
+    index->items.erase(iter);
+
+    return Qtrue;
+}
+
 VALUE define_class(VALUE rb_mFlatVectorSearch)
 {
     VALUE rb_cIndex = rb_define_class_under(rb_mFlatVectorSearch, "Index", rb_cObject);
@@ -137,6 +156,7 @@ VALUE define_class(VALUE rb_mFlatVectorSearch)
     rb_define_method(rb_cIndex, "get_items", RUBY_METHOD_FUNC(index_get_items), 0);
     rb_define_method(rb_cIndex, "get_item", RUBY_METHOD_FUNC(index_get_item), 1);
     rb_define_method(rb_cIndex, "add_item", RUBY_METHOD_FUNC(index_add_item), 2);
+    rb_define_method(rb_cIndex, "remove_item", RUBY_METHOD_FUNC(index_remove_item), 1);
     return rb_cIndex;
 }
 
