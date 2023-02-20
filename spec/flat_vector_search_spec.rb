@@ -5,8 +5,7 @@ RSpec.describe FlatVectorSearch do
     expect(FlatVectorSearch::VERSION).not_to be_nil
   end
 
-  it "does something useful" do
-    f = false
-    expect(f).to be(true)
+  it "test c++ extension" do
+    expect(FlatVectorSearch::TestClass.hello("name")).to eq("Hello world!")
   end
 end

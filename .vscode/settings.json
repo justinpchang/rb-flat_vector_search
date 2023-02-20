@@ -19,5 +19,6 @@
   },
   "[ruby]": {
     "editor.defaultFormatter": "rebornix.ruby"
-  }
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }
