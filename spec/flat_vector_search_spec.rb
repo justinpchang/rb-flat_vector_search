@@ -20,4 +20,19 @@ RSpec.describe FlatVectorSearch do
 
     expect(index.get_items.keys.length).to eq(0)
   end
+
+  describe "nearest_k" do
+    before do
+      @index = FlatVectorSearch::Index.new(2)
+      @index.add_item("0,1", [0, 1])
+      @index.add_item("1,1", [1, 1])
+      @index.add_item("1,0", [1, 0])
+      @index.add_item("1,-1", [1, -1])
+      @index.add_item("0,-1", [0, -1])
+    end
+
+    it "nearest_k_by_vector" do
+      expect(@index.nearest_k_by_vector([1, 0], 3)).to eq(["1,0", "1,-1", "1,1"])
+    end
+  end
 end
