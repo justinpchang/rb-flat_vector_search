@@ -19,5 +19,9 @@
   },
   "[ruby]": {
     "editor.defaultFormatter": "rebornix.ruby"
+  },
+  "files.associations": {
+    "*.js": "javascript",
+    "typeinfo": "cpp"
   }
 }

@@ -6,6 +6,7 @@ RSpec.describe FlatVectorSearch do
   end
 
   it "test c++ extension" do
-    expect(FlatVectorSearch::TestClass.hello("name")).to eq("Hello world!")
+    index = FlatVectorSearch::Index.new(5)
+    expect(index.get_n_dims).to eq(5)
   end
 end
