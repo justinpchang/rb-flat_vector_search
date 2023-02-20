@@ -1,7 +1,10 @@
 #ifndef FLAT_VECTOR_SEARCH_HPP
 #define FLAT_VECTOR_SEARCH_HPP 1
 
+#include <iostream>
+#include <map>
 #include <vector>
+#include <string>
 
 #include <ruby.h>
 #include <typeinfo>
@@ -9,7 +12,7 @@
 struct index_t
 {
     int n_dims;
-    std::vector<std::vector<double>> vecs;
+    std::map<std::string, std::vector<double>> items;
 };
 
 void index_free(void *ptr)
@@ -36,6 +39,7 @@ static const rb_data_type_t rb_index_t = {
 VALUE index_alloc(VALUE self)
 {
     index_t *ptr = (index_t *)ruby_xmalloc(sizeof(index_t));
+    new (ptr) index_t();
     return TypedData_Wrap_Struct(self, &rb_index_t, ptr);
 }
 
@@ -64,33 +68,32 @@ VALUE index_get_n_dims(VALUE self)
 VALUE index_get_items(VALUE self)
 {
     const int n_dims = get_index(self)->n_dims;
-    const std::vector<std::vector<double>> vecs = get_index(self)->vecs;
-    VALUE rb_items_ary = rb_ary_new2(vecs.size());
+    const std::map<std::string, std::vector<double>> items = get_index(self)->items;
+    VALUE rb_items_hash = rb_hash_new();
 
-    for (int i = 0; i < vecs.size(); i += 1)
+    for (auto const &[key, vec] : items)
     {
-        const std::vector<double> vec = vecs[i];
         VALUE rb_item_ary = rb_ary_new2(n_dims);
 
-        for (int j = 0; j < vec.size(); j += 1)
+        for (int i = 0; i < vec.size(); i += 1)
         {
-            rb_ary_store(rb_item_ary, j, DBL2NUM(vec[j]));
+            rb_ary_store(rb_item_ary, i, DBL2NUM(vec[i]));
         }
 
-        rb_ary_store(rb_items_ary, i, rb_item_ary);
+        rb_hash_aset(rb_items_hash, rb_str_new2(key.c_str()), rb_item_ary);
     }
 
-    return rb_items_ary;
+    return rb_items_hash;
 }
 
-VALUE index_get_item(VALUE self, VALUE _idx)
+VALUE index_get_item(VALUE self, VALUE _key)
 {
-    Check_Type(_idx, T_FIXNUM);
+    Check_Type(_key, T_STRING);
 
-    const int32_t idx = (int32_t)NUM2INT(_idx);
+    const char *key = (char *)StringValueCStr(_key);
     const int n_dims = get_index(self)->n_dims;
 
-    const std::vector<double> vec = get_index(self)->vecs[idx];
+    const std::vector<double> vec = get_index(self)->items[key];
     VALUE rb_item_ary = rb_ary_new2(n_dims);
 
     for (int i = 0; i < vec.size(); i += 1)
@@ -101,17 +104,13 @@ VALUE index_get_item(VALUE self, VALUE _idx)
     return rb_item_ary;
 }
 
-VALUE index_add_item(VALUE self, VALUE _idx, VALUE _vec)
+VALUE index_add_item(VALUE self, VALUE _key, VALUE _vec)
 {
-    Check_Type(_idx, T_FIXNUM);
+    Check_Type(_key, T_STRING);
+    Check_Type(_vec, T_ARRAY);
 
-    const int32_t idx = (int32_t)NUM2INT(_idx);
+    const std::string key = (char *)StringValueCStr(_key);
     const int n_dims = get_index(self)->n_dims;
-
-    if (!RB_TYPE_P(_vec, T_ARRAY))
-    {
-        rb_raise(rb_eArgError, "Item vector should be Array.");
-    }
 
     if (n_dims != RARRAY_LEN(_vec))
     {
@@ -124,7 +123,7 @@ VALUE index_add_item(VALUE self, VALUE _idx, VALUE _vec)
         vec.push_back((double)NUM2DBL(rb_ary_entry(_vec, i)));
     }
 
-    get_index(self)->vecs.push_back(vec);
+    get_index(self)->items[key] = vec;
 
     return Qtrue;
 }
